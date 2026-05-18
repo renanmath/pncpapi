@@ -1,0 +1,20 @@
+[project]
+name = "pncpapi"
+version = "0.1.0"
+description = "Biblioteca para consulta de dados do Portal Nacional de Contratações Públicas (PNCP)"
+authors = [
+    {name = "renan",email = "renanmath7@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "requests (>=2.34.2,<3.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "pncpapi", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
