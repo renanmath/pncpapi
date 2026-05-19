@@ -83,6 +83,23 @@ class PNCPSearch:
             page_size=page_size,
             verbose=verbose
         )
+
+    def get_proposal_itens(self, proposal:dict,page_size:int = 100,verbose:bool = False):
+        """
+        Lista os itens de um contrato
+        """
+
+        itens =  self.get_all_results(
+            method="items",
+            cnpj=proposal["orgao_cnpj"],
+            year=proposal["ano"],
+            sequencial=proposal["numero_sequencial"],
+            page_size=page_size,
+            verbose=verbose
+        )
+        total_value = sum([item.get("valorTotal",0) for item in itens])
+        proposal["valorTotal"] = total_value
+        return itens
         
 
 
@@ -98,10 +115,7 @@ if __name__ == "__main__":
     )
     print(f"Encontradas {len(results)} propostas")
     proposta = results[0]
-    cnpj = proposta["orgao_cnpj"]
-    ano = proposta["ano"]
-    sequencial = proposta["numero_sequencial"]
-    itens = buscador.list_itens(
-        cnpj=cnpj, year=ano, sequencial=sequencial, page_size=100, verbose=True
+    itens = buscador.get_proposal_itens(
+        proposta, page_size=100, verbose=True
     )
     print(f"Encontrados {len(itens)} items na primeira proposta")
