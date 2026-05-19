@@ -26,9 +26,14 @@ class PNCPSearch:
         current_page = 1
 
         while len(all_results) < total:
-            print(f"Fetching page {current_page}")
+            if verbose:
+                print(f"Fetching page {current_page}")
             if method == "search":
                 result = self.client.search(query=query, page=current_page, **kwargs)
+                
+                if not result:
+                    break
+
                 partial_results = result["items"]
                 total = result.get("total", 0)
             elif method == "items":
