@@ -63,10 +63,15 @@ class PNCPClient:
 
     def get_contract_itens(
         self, cnpj: str, year: int, sequencial: int, page: int = 1, page_size: int = 100
-    ):
+    )->list[dict]:
         url = f"{BASE_URL}/orgaos/{cnpj}/compras/{year}/{sequencial}/itens"
         params = {"pagina": page, "tam_pagina": page_size}
-        return self._get(url, params=params)
+
+        try:
+            return self._get(url, params=params)
+        except Exception as e:
+            print(f"Error getting contract itens: {e}")
+            return []
 
     def close(self):
         self.session.close()
