@@ -68,7 +68,7 @@ class PNCPSearch:
         """
 
         return self.get_all_results(
-            method="search", query=query, page_size=page_size, status=status, **kwargs
+            method="search", query=query, page_size=page_size, status=status,verbose=verbose, **kwargs
         )
 
     def list_itens(self, cnpj: str, year: int, sequencial: int, page_size: int = 100, verbose: bool = False):
