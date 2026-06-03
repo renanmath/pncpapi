@@ -6,6 +6,14 @@ BASE_URL_2 = "https://pncp.gov.br/api/consulta/v1"
 SEARCH_URL = "https://pncp.gov.br/api/search"
 
 
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "application/json",
+    "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+    "Connection": "keep-alive" # Mantém o canal aberto para evitar handshakes repetidos
+}
+
+
 class PNCPClient:
     """
     Class to get data from PNCP API
@@ -13,9 +21,7 @@ class PNCPClient:
 
     def __init__(self, timeout: int = 120):
         self.session = requests.Session()
-        self.session.headers.update(
-            {"Accept": "application/json", "Content-Type": "application/json"}
-        )
+        self.session.headers.update(HEADERS)
         self.session.timeout = timeout
 
     def _get(self, url: str, params=None):
