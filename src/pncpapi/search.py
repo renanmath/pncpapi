@@ -18,6 +18,7 @@ class PNCPSearch:
         sequencial: int = None,
         page_size: int = 100,
         verbose: bool = False,
+        get_suppliers: bool = False,
         **kwargs,
     ):
 
@@ -43,6 +44,7 @@ class PNCPSearch:
                     sequencial=sequencial,
                     page=current_page,
                     page_size=page_size,
+                    get_suppliers=get_suppliers,
                     **kwargs,
                 )
                 partial_results = result
@@ -61,6 +63,7 @@ class PNCPSearch:
         page_size: int = 100,
         status: str = "recebendo_proposta",
         verbose: bool = False,
+        get_suppliers: bool = False,
         **kwargs,
     ) -> list[dict]:
         """
@@ -81,10 +84,11 @@ class PNCPSearch:
             year=year,
             sequencial=sequencial,
             page_size=page_size,
-            verbose=verbose
+            verbose=verbose,
+            get_suppliers=get_suppliers
         )
 
-    def get_proposal_itens(self, proposal:dict,page_size:int = 100,verbose:bool = False):
+    def get_proposal_itens(self, proposal:dict,page_size:int = 100,verbose:bool = False,get_suppliers:bool = False):
         """
         Lista os itens de um contrato
         """
@@ -95,7 +99,8 @@ class PNCPSearch:
             year=proposal["ano"],
             sequencial=proposal["numero_sequencial"],
             page_size=page_size,
-            verbose=verbose
+            verbose=verbose,
+            get_suppliers=get_suppliers
         )
         total_value = sum([item.get("valorTotal",0) for item in itens])
         proposal["valorTotal"] = total_value
@@ -106,16 +111,17 @@ class PNCPSearch:
 if __name__ == "__main__":
 
     item_buscado = "informatica"
-    estados = ["CE", "SP", "RJ"]
+    estados = ["CE"]
     modalidade = 8
 
     buscador = PNCPSearch()
     results = buscador.search(
-        query=item_buscado, ufs="|".join(estados), modalidades=modalidade,verbose=True
+        query=item_buscado, ufs="|".join(estados), modalidades=modalidade,verbose=True,status="encerradas"
     )
     print(f"Encontradas {len(results)} propostas")
     proposta = results[0]
     itens = buscador.get_proposal_itens(
-        proposta, page_size=100, verbose=True
+        proposta, page_size=100, verbose=True,get_suppliers=True
     )
     print(f"Encontrados {len(itens)} items na primeira proposta")
+    print(itens[0]['fornecedor'])

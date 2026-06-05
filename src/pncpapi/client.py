@@ -68,16 +68,31 @@ class PNCPClient:
             return None
 
     def get_contract_itens(
-        self, cnpj: str, year: int, sequencial: int, page: int = 1, page_size: int = 100
+        self, cnpj: str, year: int, sequencial: int, page: int = 1, page_size: int = 100, get_suppliers:bool=False
     )->list[dict]:
         url = f"{BASE_URL}/orgaos/{cnpj}/compras/{year}/{sequencial}/itens"
         params = {"pagina": page, "tam_pagina": page_size}
 
         try:
-            return self._get(url, params=params)
+            itens = self._get(url, params=params)
+            if get_suppliers:
+                for item in itens:
+                    item["fornecedor"] = self.get_item_supplier(cnpj, year, sequencial, item['numeroItem'])
+            return itens
         except Exception as e:
             print(f"Error getting contract itens: {e}")
             return []
+
+    def get_item_supplier(
+        self, cnpj: str, year: int, sequencial: int, item_index: int
+    ) -> list[dict]:
+        url = f"{BASE_URL}/orgaos/{cnpj}/compras/{year}/{sequencial}/itens/{item_index}/resultados"
+
+        try:
+            return self._get(url)
+        except Exception as e:
+            print(f"Error getting contract itens suppliers: {e}\n{url}")
+            return None
 
     def close(self):
         self.session.close()
